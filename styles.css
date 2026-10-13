@@ -1,0 +1,49 @@
+.daylio-import-modal {
+  width: min(860px, 95vw);
+}
+
+.daylio-import {
+  max-height: 75vh;
+  overflow-y: auto;
+}
+
+.daylio-import .setting-item {
+  padding: 10px 0;
+}
+
+.daylio-import summary {
+  cursor: pointer;
+  padding: 8px 0;
+  color: var(--text-muted);
+}
+
+.daylio-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--font-ui-small);
+}
+
+.daylio-table th, .daylio-table td {
+  padding: 8px;
+  text-align: left;
+  border-bottom: 1px solid var(--background-modifier-border);
+  overflow-wrap: anywhere;
+}
+
+.daylio-counts {
+  color: var(--text-accent);
+  font-weight: var(--font-semibold);
+}
+
+.daylio-status {
+  padding: 12px 0;
+}
+
+.daylio-picker {
+  max-width: 280px;
+}
+
+.daylio-pro-note {
+  color: var(--text-muted);
+  font-size: var(--font-ui-small);
+}

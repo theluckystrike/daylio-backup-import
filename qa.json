@@ -1,0 +1,68 @@
+[
+  {
+    "feature": "preview",
+    "caption": "The preview shows two entries, one photo and no missing photos.",
+    "note": "Start here.md",
+    "eval": "(async()=>{const p=app.plugins.plugins['daylio-backup-import']; p.closeImportWindows(); const f=app.vault.getFileByPath('Daylio Backup Import/Demo backup.zip'); const b=p.readBackup(new Uint8Array(await app.vault.readBinary(f))); p.pro.signOut(); p.settings.folder='Daylio preview'; const m=p.openImport(b); await m.refreshPreview(); m.contentEl.scrollTop=m.contentEl.scrollHeight; return '2 entries, 1 photo';})()",
+    "zoom": 0.85,
+    "wait": 900,
+    "after": "(()=>{const p=app.plugins.plugins['daylio-backup-import']; p.closeImportWindows(); p.pro.signOut(); p.settings.useRules=false; p.settings.dailyMerge=false; p.settings.folder='Daylio'; return 'ok';})()"
+  },
+  {
+    "feature": "note",
+    "caption": "The imported note has the mood, activities and local time.",
+    "eval": "(async()=>{const p=app.plugins.plugins['daylio-backup-import']; p.closeImportWindows(); const f=app.vault.getFileByPath('Daylio Backup Import/Demo backup.zip'); const b=p.readBackup(new Uint8Array(await app.vault.readBinary(f))); let token='gho_'+'0'.repeat(36); p.pro.opts.tokens.get=()=>token; p.pro.opts.tokens.set=(v)=>{token=v;}; p.pro.opts.tokens.clear=()=>{token=null;}; p.pro.opts.http=async()=>({status:200,json:{data:{viewer:{login:'demo-reader',totalSponsorshipAmountAsSponsorInCents:1500},user:{viewerIsSponsoring:true,sponsorshipForViewerAsSponsor:{isActive:true,isOneTimePayment:false,tier:{name:'$5 a month',monthlyPriceInCents:500}}}}}}); await p.pro.refreshNow(); await p.importPlan(await p.prepare(b,{folder:'Daylio demo',nameRule:'{date} Daylio {id}',filter:null,daily:{folder:'Daylio demo/Daily',heading:'Daylio'}})); p.pro.signOut(); await app.workspace.getLeaf(false).openFile(app.vault.getFileByPath('Daylio demo/2023-11-19 Daylio 15024.md'),{state:{mode:'preview'}}); return 'note with mood and activities';})()",
+    "zoom": 0.85,
+    "wait": 900,
+    "after": "(()=>{const p=app.plugins.plugins['daylio-backup-import']; p.closeImportWindows(); p.pro.signOut(); p.settings.useRules=false; p.settings.dailyMerge=false; p.settings.folder='Daylio'; return 'ok';})()"
+  },
+  {
+    "feature": "photos",
+    "caption": "The imported note embeds the photo from the backup.",
+    "eval": "(async()=>{const p=app.plugins.plugins['daylio-backup-import']; p.closeImportWindows(); const f=app.vault.getFileByPath('Daylio Backup Import/Demo backup.zip'); const b=p.readBackup(new Uint8Array(await app.vault.readBinary(f))); let token='gho_'+'0'.repeat(36); p.pro.opts.tokens.get=()=>token; p.pro.opts.tokens.set=(v)=>{token=v;}; p.pro.opts.tokens.clear=()=>{token=null;}; p.pro.opts.http=async()=>({status:200,json:{data:{viewer:{login:'demo-reader',totalSponsorshipAmountAsSponsorInCents:1500},user:{viewerIsSponsoring:true,sponsorshipForViewerAsSponsor:{isActive:true,isOneTimePayment:false,tier:{name:'$5 a month',monthlyPriceInCents:500}}}}}}); await p.pro.refreshNow(); await p.importPlan(await p.prepare(b,{folder:'Daylio demo',nameRule:'{date} Daylio {id}',filter:null,daily:{folder:'Daylio demo/Daily',heading:'Daylio'}})); p.pro.signOut(); await app.workspace.getLeaf(false).openFile(app.vault.getFileByPath('Daylio demo/2023-11-19 Daylio 15024.md'),{state:{mode:'preview'}}); app.workspace.getLeaf(false).view.containerEl.querySelector('.markdown-preview-view').scrollTop=400; return 'note with local photo';})()",
+    "zoom": 0.85,
+    "wait": 900,
+    "after": "(()=>{const p=app.plugins.plugins['daylio-backup-import']; p.closeImportWindows(); p.pro.signOut(); p.settings.useRules=false; p.settings.dailyMerge=false; p.settings.folder='Daylio'; return 'ok';})()"
+  },
+  {
+    "feature": "daily-section",
+    "caption": "The daily note has a Daylio section with links to two entries.",
+    "eval": "(async()=>{const p=app.plugins.plugins['daylio-backup-import']; p.closeImportWindows(); const f=app.vault.getFileByPath('Daylio Backup Import/Demo backup.zip'); const b=p.readBackup(new Uint8Array(await app.vault.readBinary(f))); let token='gho_'+'0'.repeat(36); p.pro.opts.tokens.get=()=>token; p.pro.opts.tokens.set=(v)=>{token=v;}; p.pro.opts.tokens.clear=()=>{token=null;}; p.pro.opts.http=async()=>({status:200,json:{data:{viewer:{login:'demo-reader',totalSponsorshipAmountAsSponsorInCents:1500},user:{viewerIsSponsoring:true,sponsorshipForViewerAsSponsor:{isActive:true,isOneTimePayment:false,tier:{name:'$5 a month',monthlyPriceInCents:500}}}}}}); await p.pro.refreshNow(); await p.importPlan(await p.prepare(b,{folder:'Daylio demo',nameRule:'{date} Daylio {id}',filter:null,daily:{folder:'Daylio demo/Daily',heading:'Daylio'}})); p.pro.signOut(); await app.workspace.getLeaf(false).openFile(app.vault.getFileByPath('Daylio demo/Daily/2023-11-19.md'),{state:{mode:'preview'}}); return 'daily note section';})()",
+    "zoom": 0.85,
+    "wait": 900,
+    "after": "(()=>{const p=app.plugins.plugins['daylio-backup-import']; p.closeImportWindows(); p.pro.signOut(); p.settings.useRules=false; p.settings.dailyMerge=false; p.settings.folder='Daylio'; return 'ok';})()"
+  },
+  {
+    "feature": "rules",
+    "caption": "Pro date filter, file name rule and daily note options in the import window.",
+    "eval": "(async()=>{const p=app.plugins.plugins['daylio-backup-import']; p.closeImportWindows(); const f=app.vault.getFileByPath('Daylio Backup Import/Demo backup.zip'); const b=p.readBackup(new Uint8Array(await app.vault.readBinary(f))); let token='gho_'+'0'.repeat(36); p.pro.opts.tokens.get=()=>token; p.pro.opts.tokens.set=(v)=>{token=v;}; p.pro.opts.tokens.clear=()=>{token=null;}; p.pro.opts.http=async()=>({status:200,json:{data:{viewer:{login:'demo-reader',totalSponsorshipAmountAsSponsorInCents:1500},user:{viewerIsSponsoring:true,sponsorshipForViewerAsSponsor:{isActive:true,isOneTimePayment:false,tier:{name:'$5 a month',monthlyPriceInCents:500}}}}}}); await p.pro.refreshNow(); p.settings.folder='Daylio preview'; p.settings.useRules=true; p.settings.nameRule='{date} {mood} {id}'; p.settings.filter={from:'2023-11-01',to:'2023-11-30'}; p.settings.dailyMerge=true; p.settings.dailyFolder='Daylio demo/Daily'; p.settings.dailyHeading='Daylio'; const m=p.openImport(b); m.updatePro(); await m.refreshPreview(); m.contentEl.scrollTop=220; return 'Pro rules';})()",
+    "zoom": 0.85,
+    "wait": 900,
+    "after": "(()=>{const p=app.plugins.plugins['daylio-backup-import']; p.closeImportWindows(); p.pro.signOut(); p.settings.useRules=false; p.settings.dailyMerge=false; p.settings.folder='Daylio'; return 'ok';})()"
+  },
+  {
+    "feature": "import-flow",
+    "caption": "Preview the backup, then read the note, its photo and the daily note section.",
+    "zoom": 0.85,
+    "frames": [
+      {
+        "note": "Start here.md",
+        "eval": "(async()=>{const p=app.plugins.plugins['daylio-backup-import']; p.closeImportWindows(); const f=app.vault.getFileByPath('Daylio Backup Import/Demo backup.zip'); const b=p.readBackup(new Uint8Array(await app.vault.readBinary(f))); p.pro.signOut(); p.settings.folder='Daylio preview'; const m=p.openImport(b); await m.refreshPreview(); m.contentEl.scrollTop=m.contentEl.scrollHeight; return '2 entries, 1 photo';})()",
+        "hold": 1800
+      },
+      {
+        "eval": "(async()=>{const p=app.plugins.plugins['daylio-backup-import']; p.closeImportWindows(); const f=app.vault.getFileByPath('Daylio Backup Import/Demo backup.zip'); const b=p.readBackup(new Uint8Array(await app.vault.readBinary(f))); let token='gho_'+'0'.repeat(36); p.pro.opts.tokens.get=()=>token; p.pro.opts.tokens.set=(v)=>{token=v;}; p.pro.opts.tokens.clear=()=>{token=null;}; p.pro.opts.http=async()=>({status:200,json:{data:{viewer:{login:'demo-reader',totalSponsorshipAmountAsSponsorInCents:1500},user:{viewerIsSponsoring:true,sponsorshipForViewerAsSponsor:{isActive:true,isOneTimePayment:false,tier:{name:'$5 a month',monthlyPriceInCents:500}}}}}}); await p.pro.refreshNow(); await p.importPlan(await p.prepare(b,{folder:'Daylio demo',nameRule:'{date} Daylio {id}',filter:null,daily:{folder:'Daylio demo/Daily',heading:'Daylio'}})); p.pro.signOut(); await app.workspace.getLeaf(false).openFile(app.vault.getFileByPath('Daylio demo/2023-11-19 Daylio 15024.md'),{state:{mode:'preview'}}); return 'note with mood and activities';})()",
+        "hold": 1800
+      },
+      {
+        "eval": "(async()=>{const p=app.plugins.plugins['daylio-backup-import']; p.closeImportWindows(); const f=app.vault.getFileByPath('Daylio Backup Import/Demo backup.zip'); const b=p.readBackup(new Uint8Array(await app.vault.readBinary(f))); let token='gho_'+'0'.repeat(36); p.pro.opts.tokens.get=()=>token; p.pro.opts.tokens.set=(v)=>{token=v;}; p.pro.opts.tokens.clear=()=>{token=null;}; p.pro.opts.http=async()=>({status:200,json:{data:{viewer:{login:'demo-reader',totalSponsorshipAmountAsSponsorInCents:1500},user:{viewerIsSponsoring:true,sponsorshipForViewerAsSponsor:{isActive:true,isOneTimePayment:false,tier:{name:'$5 a month',monthlyPriceInCents:500}}}}}}); await p.pro.refreshNow(); await p.importPlan(await p.prepare(b,{folder:'Daylio demo',nameRule:'{date} Daylio {id}',filter:null,daily:{folder:'Daylio demo/Daily',heading:'Daylio'}})); p.pro.signOut(); await app.workspace.getLeaf(false).openFile(app.vault.getFileByPath('Daylio demo/2023-11-19 Daylio 15024.md'),{state:{mode:'preview'}}); app.workspace.getLeaf(false).view.containerEl.querySelector('.markdown-preview-view').scrollTop=400; return 'note with local photo';})()",
+        "hold": 1800
+      },
+      {
+        "eval": "(async()=>{const p=app.plugins.plugins['daylio-backup-import']; p.closeImportWindows(); const f=app.vault.getFileByPath('Daylio Backup Import/Demo backup.zip'); const b=p.readBackup(new Uint8Array(await app.vault.readBinary(f))); let token='gho_'+'0'.repeat(36); p.pro.opts.tokens.get=()=>token; p.pro.opts.tokens.set=(v)=>{token=v;}; p.pro.opts.tokens.clear=()=>{token=null;}; p.pro.opts.http=async()=>({status:200,json:{data:{viewer:{login:'demo-reader',totalSponsorshipAmountAsSponsorInCents:1500},user:{viewerIsSponsoring:true,sponsorshipForViewerAsSponsor:{isActive:true,isOneTimePayment:false,tier:{name:'$5 a month',monthlyPriceInCents:500}}}}}}); await p.pro.refreshNow(); await p.importPlan(await p.prepare(b,{folder:'Daylio demo',nameRule:'{date} Daylio {id}',filter:null,daily:{folder:'Daylio demo/Daily',heading:'Daylio'}})); p.pro.signOut(); await app.workspace.getLeaf(false).openFile(app.vault.getFileByPath('Daylio demo/Daily/2023-11-19.md'),{state:{mode:'preview'}}); return 'daily note section';})()",
+        "hold": 1800
+      }
+    ],
+    "after": "(()=>{const p=app.plugins.plugins['daylio-backup-import']; p.closeImportWindows(); p.pro.signOut(); p.settings.useRules=false; p.settings.dailyMerge=false; p.settings.folder='Daylio'; return 'ok';})()"
+  }
+]

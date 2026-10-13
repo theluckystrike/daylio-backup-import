@@ -1,0 +1,550 @@
+{
+ "slug": "daylio-backup-import",
+ "module": "daylio-backup-import/src/backup",
+ "function": "inspectPayload",
+ "note": "Each case names its exported function. tests/vectors.test.ts runs each case. Acceptance cases 1, 2, 6 and 7 also run against a vault in tests/plugin.test.ts.",
+ "cases": [
+  {
+   "name": "case 1 and 2: fixture payload gives entries 15024 and 15025 with one photo reference",
+   "function": "inspectPayload",
+   "args": [
+    "{\"version\":15,\"customMoods\":[{\"id\":1,\"custom_name\":\"\",\"mood_group_id\":1,\"predefined_name_id\":1,\"state\":0},{\"id\":2,\"custom_name\":\"\",\"mood_group_id\":2,\"predefined_name_id\":2,\"state\":0},{\"id\":3,\"custom_name\":\"\",\"mood_group_id\":3,\"predefined_name_id\":3,\"state\":0},{\"id\":4,\"custom_name\":\"\",\"mood_group_id\":4,\"predefined_name_id\":4,\"state\":0},{\"id\":5,\"custom_name\":\"\",\"mood_group_id\":5,\"predefined_name_id\":5,\"state\":0},{\"id\":6,\"custom_name\":\"calm\",\"mood_group_id\":2,\"predefined_name_id\":-1,\"state\":0}],\"tags\":[{\"id\":179,\"name\":\"long walk\",\"order\":1,\"state\":0},{\"id\":180,\"name\":\"reading\",\"order\":2,\"state\":0}],\"assets\":[{\"id\":1,\"checksum\":\"a3f1c0de5b7e4c2d9e8f\",\"type\":1,\"createdAt\":1700408759432}],\"dayEntries\":[{\"id\":15024,\"minute\":45,\"hour\":10,\"day\":19,\"month\":10,\"year\":2023,\"datetime\":1700408759432,\"timeZoneOffset\":-18000000,\"mood\":1,\"note\":\"Hello <strong>world</strong>\",\"note_title\":\"Same title\",\"tags\":[179],\"assets\":[1]},{\"id\":15025,\"minute\":45,\"hour\":10,\"day\":19,\"month\":10,\"year\":2023,\"datetime\":1700408759432,\"timeZoneOffset\":-18000000,\"mood\":6,\"note\":\"第二条 😀\",\"note_title\":\"Same title\",\"tags\":[180],\"assets\":[]}],\"metadata\":{\"number_of_entries\":2,\"number_of_photos\":1,\"platform\":\"android\"}}"
+   ],
+   "expected": {
+    "version": 15,
+    "entries": [
+     {
+      "id": 15024,
+      "title": "Same title",
+      "note": "Hello <strong>world</strong>",
+      "datetime": 1700408759432,
+      "offsetMs": -18000000,
+      "date": "2023-11-19",
+      "time": "10:45",
+      "local": "2023-11-19 10:45:59.432",
+      "offset": "-05:00",
+      "moodId": 1,
+      "mood": "rad",
+      "activities": [
+       "long walk"
+      ],
+      "assets": [
+       1
+      ]
+     },
+     {
+      "id": 15025,
+      "title": "Same title",
+      "note": "第二条 😀",
+      "datetime": 1700408759432,
+      "offsetMs": -18000000,
+      "date": "2023-11-19",
+      "time": "10:45",
+      "local": "2023-11-19 10:45:59.432",
+      "offset": "-05:00",
+      "moodId": 6,
+      "mood": "calm",
+      "activities": [
+       "reading"
+      ],
+      "assets": []
+     }
+    ],
+    "assets": [
+     {
+      "id": 1,
+      "checksum": "a3f1c0de5b7e4c2d9e8f",
+      "type": 1
+     }
+    ],
+    "warnings": []
+   }
+  },
+  {
+   "name": "case 3: datetime 1700408759432 with offset -18000000 is 2023-11-19 10:45:59.432 at -05:00",
+   "function": "localTime",
+   "args": [
+    1700408759432,
+    -18000000
+   ],
+   "expected": {
+    "date": "2023-11-19",
+    "time": "10:45",
+    "local": "2023-11-19 10:45:59.432",
+    "offset": "-05:00"
+   }
+  },
+  {
+   "name": "half hour offset +05:30",
+   "function": "localTime",
+   "args": [
+    0,
+    19800000
+   ],
+   "expected": {
+    "date": "1970-01-01",
+    "time": "05:30",
+    "local": "1970-01-01 05:30:00.000",
+    "offset": "+05:30"
+   }
+  },
+  {
+   "name": "offset moves the local date to the previous day",
+   "function": "localTime",
+   "args": [
+    1700352000000,
+    -3600000
+   ],
+   "expected": {
+    "date": "2023-11-18",
+    "time": "23:00",
+    "local": "2023-11-18 23:00:00.000",
+    "offset": "-01:00"
+   }
+  },
+  {
+   "name": "case 4: custom mood 6 is calm and Unicode text is unchanged",
+   "function": "inspectPayload",
+   "args": [
+    "{\"version\":15,\"customMoods\":[{\"id\":6,\"custom_name\":\"calm\",\"predefined_name_id\":-1}],\"tags\":[{\"id\":179,\"name\":\"long walk\"}],\"assets\":[],\"dayEntries\":[{\"id\":15025,\"datetime\":1700408759432,\"timeZoneOffset\":-18000000,\"mood\":6,\"note\":\"第二条 😀\",\"note_title\":\"\",\"tags\":[],\"assets\":[]}]}"
+   ],
+   "expected": {
+    "version": 15,
+    "entries": [
+     {
+      "id": 15025,
+      "title": "",
+      "note": "第二条 😀",
+      "datetime": 1700408759432,
+      "offsetMs": -18000000,
+      "date": "2023-11-19",
+      "time": "10:45",
+      "local": "2023-11-19 10:45:59.432",
+      "offset": "-05:00",
+      "moodId": 6,
+      "mood": "calm",
+      "activities": [],
+      "assets": []
+     }
+    ],
+    "assets": [],
+    "warnings": []
+   }
+  },
+  {
+   "name": "predefined mood 3 is meh",
+   "function": "inspectPayload",
+   "args": [
+    "{\"version\":15,\"customMoods\":[{\"id\":6,\"custom_name\":\"calm\",\"predefined_name_id\":-1}],\"tags\":[{\"id\":179,\"name\":\"long walk\"}],\"assets\":[],\"dayEntries\":[{\"id\":1,\"datetime\":1700408759432,\"timeZoneOffset\":-18000000,\"mood\":3,\"note\":\"\",\"note_title\":\"\",\"tags\":[],\"assets\":[]}]}"
+   ],
+   "expected": {
+    "version": 15,
+    "entries": [
+     {
+      "id": 1,
+      "title": "",
+      "note": "",
+      "datetime": 1700408759432,
+      "offsetMs": -18000000,
+      "date": "2023-11-19",
+      "time": "10:45",
+      "local": "2023-11-19 10:45:59.432",
+      "offset": "-05:00",
+      "moodId": 3,
+      "mood": "meh",
+      "activities": [],
+      "assets": []
+     }
+    ],
+    "assets": [],
+    "warnings": []
+   }
+  },
+  {
+   "name": "case 5: tag 179 is long walk and HTML stays as source text",
+   "function": "inspectPayload",
+   "args": [
+    "{\"version\":15,\"customMoods\":[{\"id\":6,\"custom_name\":\"calm\",\"predefined_name_id\":-1}],\"tags\":[{\"id\":179,\"name\":\"long walk\"}],\"assets\":[],\"dayEntries\":[{\"id\":15024,\"datetime\":1700408759432,\"timeZoneOffset\":-18000000,\"mood\":0,\"note\":\"Hello <strong>world</strong>\",\"note_title\":\"\",\"tags\":[179,179],\"assets\":[]}]}"
+   ],
+   "expected": {
+    "version": 15,
+    "entries": [
+     {
+      "id": 15024,
+      "title": "",
+      "note": "Hello <strong>world</strong>",
+      "datetime": 1700408759432,
+      "offsetMs": -18000000,
+      "date": "2023-11-19",
+      "time": "10:45",
+      "local": "2023-11-19 10:45:59.432",
+      "offset": "-05:00",
+      "moodId": 0,
+      "mood": "",
+      "activities": [
+       "long walk"
+      ],
+      "assets": []
+     }
+    ],
+    "assets": [],
+    "warnings": []
+   }
+  },
+  {
+   "name": "unknown activity ID gives a warning",
+   "function": "inspectPayload",
+   "args": [
+    "{\"version\":15,\"customMoods\":[{\"id\":6,\"custom_name\":\"calm\",\"predefined_name_id\":-1}],\"tags\":[{\"id\":179,\"name\":\"long walk\"}],\"assets\":[],\"dayEntries\":[{\"id\":1,\"datetime\":1700408759432,\"timeZoneOffset\":-18000000,\"mood\":0,\"note\":\"\",\"note_title\":\"\",\"tags\":[999],\"assets\":[]}]}"
+   ],
+   "expected": {
+    "version": 15,
+    "entries": [
+     {
+      "id": 1,
+      "title": "",
+      "note": "",
+      "datetime": 1700408759432,
+      "offsetMs": -18000000,
+      "date": "2023-11-19",
+      "time": "10:45",
+      "local": "2023-11-19 10:45:59.432",
+      "offset": "-05:00",
+      "moodId": 0,
+      "mood": "",
+      "activities": [],
+      "assets": []
+     }
+    ],
+    "assets": [],
+    "warnings": [
+     "Entry 1: unknown activity ID 999."
+    ]
+   }
+  },
+  {
+   "name": "unknown mood ID gives a warning",
+   "function": "inspectPayload",
+   "args": [
+    "{\"version\":15,\"customMoods\":[{\"id\":6,\"custom_name\":\"calm\",\"predefined_name_id\":-1}],\"tags\":[{\"id\":179,\"name\":\"long walk\"}],\"assets\":[],\"dayEntries\":[{\"id\":1,\"datetime\":1700408759432,\"timeZoneOffset\":-18000000,\"mood\":42,\"note\":\"\",\"note_title\":\"\",\"tags\":[],\"assets\":[]}]}"
+   ],
+   "expected": {
+    "version": 15,
+    "entries": [
+     {
+      "id": 1,
+      "title": "",
+      "note": "",
+      "datetime": 1700408759432,
+      "offsetMs": -18000000,
+      "date": "2023-11-19",
+      "time": "10:45",
+      "local": "2023-11-19 10:45:59.432",
+      "offset": "-05:00",
+      "moodId": 42,
+      "mood": "",
+      "activities": [],
+      "assets": []
+     }
+    ],
+    "assets": [],
+    "warnings": [
+     "Entry 1: unknown mood ID 42."
+    ]
+   }
+  },
+  {
+   "name": "unknown asset ID gives a warning and no photo reference",
+   "function": "inspectPayload",
+   "args": [
+    "{\"version\":15,\"customMoods\":[{\"id\":6,\"custom_name\":\"calm\",\"predefined_name_id\":-1}],\"tags\":[{\"id\":179,\"name\":\"long walk\"}],\"assets\":[],\"dayEntries\":[{\"id\":1,\"datetime\":1700408759432,\"timeZoneOffset\":-18000000,\"mood\":0,\"note\":\"\",\"note_title\":\"\",\"tags\":[],\"assets\":[7]}]}"
+   ],
+   "expected": {
+    "version": 15,
+    "entries": [
+     {
+      "id": 1,
+      "title": "",
+      "note": "",
+      "datetime": 1700408759432,
+      "offsetMs": -18000000,
+      "date": "2023-11-19",
+      "time": "10:45",
+      "local": "2023-11-19 10:45:59.432",
+      "offset": "-05:00",
+      "moodId": 0,
+      "mood": "",
+      "activities": [],
+      "assets": []
+     }
+    ],
+    "assets": [],
+    "warnings": [
+     "Entry 1: unknown asset ID 7."
+    ]
+   }
+  },
+  {
+   "name": "case 8: version 16 is rejected",
+   "function": "inspectPayload",
+   "args": [
+    "{\"version\":16,\"dayEntries\":[]}"
+   ],
+   "expected": {
+    "error": "Unsupported Daylio schema version 16. This plugin reads version 15 only."
+   }
+  },
+  {
+   "name": "missing version is rejected",
+   "function": "inspectPayload",
+   "args": [
+    "{\"dayEntries\":[]}"
+   ],
+   "expected": {
+    "error": "Unsupported Daylio schema version (missing). This plugin reads version 15 only."
+   }
+  },
+  {
+   "name": "version as a string is rejected",
+   "function": "inspectPayload",
+   "args": [
+    "{\"version\":\"15\",\"dayEntries\":[]}"
+   ],
+   "expected": {
+    "error": "Unsupported Daylio schema version \"15\". This plugin reads version 15 only."
+   }
+  },
+  {
+   "name": "duplicate entry IDs are rejected",
+   "function": "inspectPayload",
+   "args": [
+    "{\"version\":15,\"customMoods\":[{\"id\":6,\"custom_name\":\"calm\",\"predefined_name_id\":-1}],\"tags\":[{\"id\":179,\"name\":\"long walk\"}],\"assets\":[],\"dayEntries\":[{\"id\":1,\"datetime\":1700408759432,\"timeZoneOffset\":-18000000,\"mood\":0,\"note\":\"\",\"note_title\":\"\",\"tags\":[],\"assets\":[]},{\"id\":1,\"datetime\":1700408759432,\"timeZoneOffset\":-18000000,\"mood\":0,\"note\":\"\",\"note_title\":\"\",\"tags\":[],\"assets\":[]}]}"
+   ],
+   "expected": {
+    "error": "Duplicate entry ID 1."
+   }
+  },
+  {
+   "name": "invalid JSON is rejected",
+   "function": "inspectPayload",
+   "args": [
+    "{\"version\":15,"
+   ],
+   "expected": {
+    "error": "The backup payload is not valid JSON."
+   }
+  },
+  {
+   "name": "missing dayEntries list is rejected",
+   "function": "inspectPayload",
+   "args": [
+    "{\"version\":15}"
+   ],
+   "expected": {
+    "error": "The backup has no dayEntries list."
+   }
+  },
+  {
+   "name": "asset checksum with a parent step is rejected",
+   "function": "inspectPayload",
+   "args": [
+    "{\"version\":15,\"customMoods\":[{\"id\":6,\"custom_name\":\"calm\",\"predefined_name_id\":-1}],\"tags\":[{\"id\":179,\"name\":\"long walk\"}],\"assets\":[{\"id\":1,\"checksum\":\"../x\",\"type\":1}],\"dayEntries\":[]}"
+   ],
+   "expected": {
+    "error": "Asset 1 has an unsafe checksum."
+   }
+  },
+  {
+   "name": "empty entry list gives no entries",
+   "function": "inspectPayload",
+   "args": [
+    "{\"version\":15,\"customMoods\":[{\"id\":6,\"custom_name\":\"calm\",\"predefined_name_id\":-1}],\"tags\":[{\"id\":179,\"name\":\"long walk\"}],\"assets\":[],\"dayEntries\":[]}"
+   ],
+   "expected": {
+    "version": 15,
+    "entries": [],
+    "assets": [],
+    "warnings": []
+   }
+  },
+  {
+   "name": "case 8: member ../outside.md is rejected",
+   "function": "checkArchive",
+   "args": [
+    1000,
+    [
+     "backup.daylio",
+     "../outside.md"
+    ],
+    [
+     10,
+     10
+    ]
+   ],
+   "expected": "The backup has an unsafe archive path: ../outside.md"
+  },
+  {
+   "name": "absolute member path is rejected",
+   "function": "checkArchive",
+   "args": [
+    1000,
+    [
+     "backup.daylio",
+     "/outside.md"
+    ],
+    [
+     10,
+     10
+    ]
+   ],
+   "expected": "The backup has an unsafe archive path: /outside.md"
+  },
+  {
+   "name": "drive letter member path is rejected",
+   "function": "checkArchive",
+   "args": [
+    1000,
+    [
+     "backup.daylio",
+     "C:/outside.md"
+    ],
+    [
+     10,
+     10
+    ]
+   ],
+   "expected": "The backup has an unsafe archive path: C:/outside.md"
+  },
+  {
+   "name": "duplicate member names are rejected",
+   "function": "checkArchive",
+   "args": [
+    1000,
+    [
+     "backup.daylio",
+     "backup.daylio"
+    ],
+    [
+     10,
+     10
+    ]
+   ],
+   "expected": "The backup has a duplicate archive name: backup.daylio"
+  },
+  {
+   "name": "case 9: compressed size above 20 MiB is rejected",
+   "function": "checkArchive",
+   "args": [
+    20971521,
+    [
+     "backup.daylio"
+    ],
+    [
+     10
+    ]
+   ],
+   "expected": "The backup exceeds the 20 MiB compressed size limit."
+  },
+  {
+   "name": "case 9: declared expanded size above 100 MiB is rejected",
+   "function": "checkArchive",
+   "args": [
+    1000,
+    [
+     "backup.daylio",
+     "assets/photos/a"
+    ],
+    [
+     52428800,
+     52428801
+    ]
+   ],
+   "expected": "The backup declares more than the 100 MiB expanded size limit."
+  },
+  {
+   "name": "a valid member list passes",
+   "function": "checkArchive",
+   "args": [
+    1000,
+    [
+     "backup.daylio",
+     "assets/photos/2023/11/a3f1c0de5b7e4c2d9e8f"
+    ],
+    [
+     10,
+     10
+    ]
+   ],
+   "expected": ""
+  },
+  {
+   "name": "daily section is added when the heading is missing",
+   "function": "mergeSection",
+   "args": [
+    "# 2023-11-19\n\nMorning text.\n",
+    "Daylio",
+    [
+     "- 10:45 · rad [[Daylio/2023-11-19 Daylio 15024|Daylio 15024]] ^daylio-15024"
+    ]
+   ],
+   "expected": {
+    "text": "# 2023-11-19\n\nMorning text.\n\n## Daylio\n\n- 10:45 · rad [[Daylio/2023-11-19 Daylio 15024|Daylio 15024]] ^daylio-15024\n",
+    "added": 1
+   }
+  },
+  {
+   "name": "daily lines go at the end of the named section before the next heading",
+   "function": "mergeSection",
+   "args": [
+    "## Daylio\n\n- old line\n\n## Tasks\n\n- [ ] task\n",
+    "Daylio",
+    [
+     "- new ^daylio-2"
+    ]
+   ],
+   "expected": {
+    "text": "## Daylio\n\n- old line\n- new ^daylio-2\n\n## Tasks\n\n- [ ] task\n",
+    "added": 1
+   }
+  },
+  {
+   "name": "case 7: a second merge with the same block ID adds nothing",
+   "function": "mergeSection",
+   "args": [
+    "## Daylio\n\n- 10:45 ^daylio-15024\n",
+    "Daylio",
+    [
+     "- 10:45 ^daylio-15024"
+    ]
+   ],
+   "expected": {
+    "text": "## Daylio\n\n- 10:45 ^daylio-15024\n",
+    "added": 0
+   }
+  },
+  {
+   "name": "date filter includes both bounds",
+   "function": "inFilter",
+   "args": [
+    "2023-11-19",
+    {
+     "from": "2023-11-19",
+     "to": "2023-11-19"
+    }
+   ],
+   "expected": true
+  },
+  {
+   "name": "date filter excludes a later date",
+   "function": "inFilter",
+   "args": [
+    "2023-11-20",
+    {
+     "from": "",
+     "to": "2023-11-19"
+    }
+   ],
+   "expected": false
+  }
+ ]
+}

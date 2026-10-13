@@ -1,0 +1,11 @@
+{
+	"id": "daylio-backup-import",
+	"name": "Daylio Backup Import",
+	"version": "1.0.0",
+	"minAppVersion": "1.13.4",
+	"description": "Convert local Daylio version 15 backups into journal notes with moods, activities, and photos.",
+	"author": "Michael Lip",
+	"authorUrl": "https://github.com/theluckystrike",
+	"fundingUrl": "https://github.com/sponsors/theluckystrike",
+	"isDesktopOnly": false
+}
