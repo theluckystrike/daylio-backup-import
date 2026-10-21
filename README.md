@@ -30,7 +30,7 @@ Mood names come from the custom mood list. A mood without a custom name gets a D
 
 The plugin finds each referenced photo under `assets/` in the archive by its checksum. It copies the file to `<import folder>/attachments/daylio-<checksum>.<ext>` and adds an image embed to the note. The file type comes from the first bytes of the file. The photo import tests use a PNG. Display of other image formats was not tested.
 
-When the archive does not contain a referenced photo, the note keeps its text and gets no image embed. The preview and the result list the missing photo. Audio and other asset types are reported as unsupported media and are not copied.
+When the archive does not contain a referenced photo, the note keeps its text and gets no image embed. Audio and other asset types are reported as unsupported media and are not copied.
 
 <img src="https://raw.githubusercontent.com/theluckystrike/daylio-backup-import/HEAD/docs/photos.png" alt="A journal note with a photo copied from the backup" width="720">
 
@@ -50,7 +50,9 @@ Set a from date and a to date to import only entries in that range. The dates ar
 
 ## Install
 
-Copy `main.js`, `manifest.json` and `styles.css` from a release into `<vault>/.obsidian/plugins/daylio-backup-import/`. Enable the plugin in Community plugins. Obsidian 1.13.4 or later is necessary.
+Open Settings, Community plugins, Browse. Search for "Daylio Backup Import". Select Install, then Enable.
+
+For a manual install, copy `main.js`, `manifest.json` and `styles.css` from a release into `<vault>/.obsidian/plugins/daylio-backup-import/`. Enable the plugin in Community plugins. Obsidian 1.13.4 or later is necessary.
 
 ## Usage
 
@@ -67,6 +69,8 @@ A second import into the same folder skips the source IDs that notes in that fol
 
 ## Settings
 
+After a minor or major update, this plugin opens one What's new tab in the background. The tab and settings card suggest other NoteMods plugins and Zovo Chat and link to notemods.com for feedback ([privacy](https://notemods.com/privacy/)). The tab sends no data. Turn the tab off in Settings.
+
 The settings tab sets the default import folder, `Daylio`, and has the GitHub Sponsors sign in for Pro. The import window has the folder for one import and the Pro options. A completed import saves its folder for the next import.
 
 ## FAQ
@@ -81,13 +85,13 @@ The plugin reads the Android layout. We did not test an iOS backup.
 
 ### What happens if a write fails?
 
-The result line counts the errors and the preview area lists them. Notes and photos written before the error stay in the vault. Correct the problem and run the import again. It skips the source IDs that it finds.
+The result line counts the errors and the preview area lists them. Notes and photos written before the error stay in the vault. Correct the problem and run the import again.
 
 ### What did you test?
 
-Unit tests use a synthetic version 15 backup that the tests make with the field names of the public format. They run against an in-memory vault. They cover file conflicts, write errors, cancel between batches and the Pro checks. The desktop end-to-end test checks plugin reload, payload conversion, the file input, note and photo creation, repeated import, schema rejection and the Pro daily section.
+Unit tests and a desktop end-to-end test use a synthetic version 15 backup made with the field names of the public format.
 
-We did not test a real Daylio backup, a backup from a recent Daylio version, an iOS backup, a phone or tablet, a large archive on a phone, HEIC display, a live payment or a live GitHub sign in. The source code uses no Node or Electron API, but this is not a result of a device test.
+We did not test a real Daylio backup, a backup from a recent Daylio version, a phone or tablet, a large archive on a phone, HEIC display, a live payment or a live GitHub sign in. The source code uses no Node or Electron API, but this is not a result of a device test.
 
 ## Payment, account and network
 

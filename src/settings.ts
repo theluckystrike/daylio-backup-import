@@ -3,6 +3,7 @@ import { sponsorsSettingItems } from './license/github-obsidian';
 import { DEFAULT_NAME_RULE, safeFolder, validHeading, validateFilter, validateNameRule, type DateFilter } from './model';
 import { PRO_UI } from './pro';
 import type DaylioBackupImportPlugin from './main';
+import { helloSettingItems } from './hello/settings';
 
 export interface DaylioBackupImportSettings {
 	folder: string;
@@ -50,6 +51,11 @@ export function normalizeSettings(saved: unknown): DaylioBackupImportSettings {
 export class DaylioBackupImportSettingTab extends PluginSettingTab {
 	constructor(app: ConstructorParameters<typeof PluginSettingTab>[0], readonly plugin: DaylioBackupImportPlugin) { super(app, plugin); }
 	getSettingDefinitions(): SettingDefinitionItem[] {
+		// The product rows, then the "More from NoteMods" card (packages/hello).
+		return [...this.productSettingDefinitions(), ...helloSettingItems()];
+	}
+
+	productSettingDefinitions(): SettingDefinitionItem[] {
 		return [
 			{ name: 'Import folder', desc: 'Default folder for new notes and photos. You can change it in the import window.', control: { type: 'text', key: 'folder', defaultValue: DEFAULT_SETTINGS.folder } },
 			...(this.plugin.pro ? sponsorsSettingItems(this.plugin.pro, PRO_UI) : []),

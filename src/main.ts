@@ -8,6 +8,8 @@ import { DEFAULT_NAME_RULE } from './model';
 import { ImportModal } from './modal';
 import { SPONSORS, bindPro, isPro, resetPro } from './pro';
 import { DaylioBackupImportSettingTab, normalizeSettings, type DaylioBackupImportSettings } from './settings';
+import { setupHello } from './hello/index';
+import WHATS_NEW from './whats-new.json';
 
 export const NEED_PRO = 'Date filters, file name rules and the daily note section need Pro. Sign in from the plugin settings.';
 
@@ -24,6 +26,8 @@ export default class DaylioBackupImportPlugin extends Plugin {
 	private importing = false;
 
 	async onload(): Promise<void> {
+		// First: "What's new" reads its state before the settings load (packages/hello). It does not wait.
+		setupHello(this, WHATS_NEW);
 		await this.loadSettings();
 		const pro = createGitHubSponsors(this.app, this.manifest.id, SPONSORS, this);
 		pro.init();
