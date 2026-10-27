@@ -3,7 +3,7 @@ import { Modal, Notice, Setting } from 'obsidian';
 import { MAX_COMPRESSED, type Backup } from './backup';
 import type { CancelToken, ImportOptions, ImportPlan } from './importer';
 import { DEFAULT_NAME_RULE } from './model';
-import { isPro } from './pro';
+import { NEED_PRO, isPro, proNotice, proText } from './pro';
 import type DaylioBackupImportPlugin from './main';
 import type { DaylioBackupImportSettings } from './settings';
 
@@ -146,7 +146,12 @@ export class ImportModal extends Modal {
 		const disabled = !pro || this.busy;
 		new Setting(el).setName(TEXT.rules).setHeading();
 		new Setting(el).setName('Use the rules below').setDesc('Off: the plugin imports each entry with the name {date} Daylio {id}.')
-			.addToggle((t) => t.setValue(pro && r.useRules).setDisabled(disabled).onChange((value) => { r.useRules = value; this.invalidate(); }));
+			.addToggle((t) => t.setValue(pro && r.useRules).setDisabled(this.busy).onChange((value) => {
+				// A free user's select shows the Pro notice and sets the toggle back to off. setValue(false) calls this
+				// callback again with false; the !pro check returns before any change.
+				if (!isPro()) { if (value) { proNotice(NEED_PRO); t.setValue(false); } return; }
+				r.useRules = value; this.invalidate();
+			}));
 		new Setting(el).setName('From date').setDesc(TEXT.fromHelp)
 			.addText((t) => t.setPlaceholder('2023-01-01').setValue(r.filter.from).setDisabled(disabled).onChange((value) => { r.filter.from = value.trim(); this.invalidate(); }));
 		new Setting(el).setName('To date').setDesc(TEXT.toHelp)
@@ -155,15 +160,22 @@ export class ImportModal extends Modal {
 			.addText((t) => t.setValue(r.nameRule).setDisabled(disabled).onChange((value) => { r.nameRule = value; this.invalidate(); }));
 		new Setting(el).setName(TEXT.daily).setHeading();
 		new Setting(el).setName('Merge entries into daily notes').setDesc('Add one line with a link for each entry under the section heading. Other text in the daily note stays.')
-			.addToggle((t) => t.setValue(pro && r.dailyMerge).setDisabled(disabled).onChange((value) => { r.dailyMerge = value; this.invalidate(); }));
+			.addToggle((t) => t.setValue(pro && r.dailyMerge).setDisabled(this.busy).onChange((value) => {
+				if (!isPro()) { if (value) { proNotice(NEED_PRO); t.setValue(false); } return; }
+				r.dailyMerge = value; this.invalidate();
+			}));
 		new Setting(el).setName('Daily notes folder').setDesc(TEXT.dailyFolderHelp)
 			.addText((t) => t.setValue(r.dailyFolder).setDisabled(disabled).onChange((value) => { r.dailyFolder = value; this.invalidate(); }));
 		new Setting(el).setName('Section name')
 			.addText((t) => t.setValue(r.dailyHeading).setDisabled(disabled).onChange((value) => { r.dailyHeading = value; this.invalidate(); }));
-		new Setting(el).addButton((b) => b.setButtonText(TEXT.saveRules).setDisabled(disabled).onClick(() => void this.run(async () => {
-			if (await this.plugin.saveRules({ ...r, filter: { ...r.filter } })) { new Notice('Daylio import rules saved.'); this.message('Rules saved.'); }
-		})));
-		if (!pro) el.createEl('p', { cls: 'daylio-pro-note', text: TEXT.proNote });
+		new Setting(el).addButton((b) => b.setButtonText(TEXT.saveRules).setDisabled(this.busy).onClick(() => {
+			// A free user's select shows the Pro notice. No rule is saved.
+			if (!isPro()) { proNotice(NEED_PRO); return; }
+			void this.run(async () => {
+				if (await this.plugin.saveRules({ ...r, filter: { ...r.filter } })) { new Notice('Daylio import rules saved.'); this.message('Rules saved.'); }
+			});
+		}));
+		if (!pro) el.createEl('p', { cls: 'daylio-pro-note', text: proText(TEXT.proNote) });
 		this.drawActions();
 	}
 	private drawActions(): void {

@@ -1,9 +1,9 @@
 {
 	"id": "daylio-backup-import",
 	"name": "Daylio Backup Import",
-	"version": "1.1.0",
+	"version": "1.1.1",
 	"changes": [
-		"New Send feedback command. It opens a page where you can report a problem or suggest an idea."
+		"Use the rules below, Merge entries into daily notes and Save rules now show how to get Pro, with a Sponsor on GitHub button, when you select them. Nothing turns on or saves until Pro is on."
 	],
 	"tip": "With Pro, turn on \"Merge entries into daily notes\" to add a line for each entry under a heading in its daily note.",
 	"thanks": "Hi, I am Michael, a solo developer in Poland. Daylio Backup Import is one of over 100 small plugins that I make. Thank you for moving your journal into Obsidian with it.",

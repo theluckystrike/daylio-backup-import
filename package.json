@@ -1,7 +1,6 @@
 {
 	"name": "daylio-backup-import",
-	"repository": {"type": "git", "url": "theluckystrike/daylio-backup-import.git"},
-	"version": "1.1.0",
+	"version": "1.1.1",
 	"private": true,
 	"description": "Convert local Daylio version 15 backups into journal notes with moods, activities, and photos.",
 	"main": "main.js",

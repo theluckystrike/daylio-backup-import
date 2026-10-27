@@ -18,7 +18,7 @@ function setup(files: Record<string, string> = {}) {
 	const plugin = new DaylioBackupImportPlugin(app as never, manifest as never);
 	return { app, plugin };
 }
-function pro(value: boolean) { bindPro({ isPro: () => value, onChange: () => () => undefined } as never); }
+function pro(value: boolean) { bindPro({ isPro: () => value, getState: () => ({ status: 'signed-out', lastAttemptAt: 0 }), hasToken: () => false, config: { sponsorLogin: 'theluckystrike' }, onChange: () => () => undefined } as never); }
 async function read(app: ReturnType<typeof setup>['app'], path: string): Promise<string> {
 	return app.vault.read(app.vault.getAbstractFileByPath(path) as TFile);
 }
@@ -195,7 +195,8 @@ describe('import window', () => {
 		await vi.waitFor(() => { expect(modal.contentEl.querySelector('.daylio-status')?.textContent).toContain('2 notes created'); }, { timeout: 20000 });
 		expect(app.vault.getAbstractFileByPath('Daylio/2023-11-19 Daylio 15025.md')).toBeInstanceOf(TFile);
 		const save = Array.from(modal.contentEl.querySelectorAll('button')).find((b) => b.textContent === 'Save rules (Pro)');
-		expect(save?.disabled).toBe(true);
+		// Free users can select Save rules: the select shows the Pro notice (tests/pro-notice.test.ts).
+		expect(save?.disabled).toBe(false);
 		modal.close();
 	});
 	it('shows the reason when a backup is rejected', async () => {

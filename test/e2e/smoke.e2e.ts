@@ -59,7 +59,8 @@ describe('Daylio Backup Import in real Obsidian', function () {
 		await browser.$('input[type="file"]').setValue(resolve('tests/fixtures/daylio-v15.daylio'));
 		await browser.waitUntil(async () => (await browser.$('.daylio-status').getText()).includes('Preview ready'), { timeout: 20000, timeoutMsg: 'Import preview did not finish' });
 		expect(await browser.$('.daylio-counts').getText()).toContain('2 entries');
-		expect(await browser.$('button=Save rules (Pro)').isEnabled()).toBe(false);
+		// Free users can select Save rules: the select shows the Pro notice (test/e2e/pro-notice.e2e.ts).
+		expect(await browser.$('button=Save rules (Pro)').isEnabled()).toBe(true);
 		await browser.$('button=Create notes').click();
 		await browser.waitUntil(async () => (await browser.$('.daylio-status').getText()).includes('2 notes created'), { timeout: 20000, timeoutMsg: 'Import did not finish' });
 		const output = await browser.executeObsidian(async ({ app }) => {

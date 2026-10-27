@@ -9,5 +9,5 @@ export const TEXT = {
 	daily: 'Daily note section (Pro)',
 	dailyFolderHelp: 'Daily notes have the name YYYY-MM-DD.md.',
 	saveRules: 'Save rules (Pro)',
-	proNote: 'These options need Pro. Sign in from the plugin settings. The free import stays available.',
+	proNote: 'These options need Pro. The free import stays available.',
 };

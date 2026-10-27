@@ -1,5 +1,11 @@
 # daylio-backup-import
 
+## 1.1.1
+
+### Patch Changes
+
+- f285063: Use the rules below, Merge entries into daily notes and Save rules now show how to get Pro, with a Sponsor on GitHub button, when you select them. Nothing turns on or saves until Pro is on.
+
 ## 1.1.0
 
 ### Minor Changes

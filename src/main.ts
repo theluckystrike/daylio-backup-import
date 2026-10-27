@@ -1,17 +1,17 @@
 import { TEXT } from './copy';
-import { Notice, Plugin } from 'obsidian';
+import { Plugin } from 'obsidian';
 import type { SponsorsManager } from './license/index';
 import { createGitHubSponsors } from './license/github-obsidian';
 import { readBackup, type Backup } from './backup';
 import { prepareImport, validateOptions, writeImport, type CancelToken, type ImportOptions, type ImportPlan, type ImportResult } from './importer';
 import { DEFAULT_NAME_RULE } from './model';
 import { ImportModal } from './modal';
-import { SPONSORS, bindPro, isPro, resetPro } from './pro';
+import { NEED_PRO, SPONSORS, bindPro, isPro, proNotice, proText, resetPro } from './pro';
 import { DaylioBackupImportSettingTab, normalizeSettings, type DaylioBackupImportSettings } from './settings';
 import { setupHello } from './hello/index';
 import WHATS_NEW from './whats-new.json';
 
-export const NEED_PRO = 'Date filters, file name rules and the daily note section need Pro. Sign in from the plugin settings.';
+export { NEED_PRO };
 
 /** True when the options use a Pro feature. */
 export function usesPro(options: ImportOptions): boolean {
@@ -72,19 +72,19 @@ export default class DaylioBackupImportPlugin extends Plugin {
 		};
 	}
 	async prepare(backup: Backup, options: ImportOptions = this.options()): Promise<ImportPlan> {
-		if (usesPro(options) && !isPro()) throw new Error(NEED_PRO);
+		if (usesPro(options) && !isPro()) throw new Error(proText(NEED_PRO));
 		return prepareImport(this.app.vault, backup, options);
 	}
 	async importPlan(plan: ImportPlan, token?: CancelToken): Promise<ImportResult> {
 		if (this.importing) throw new Error('An import is in progress.');
 		// Check Pro again at write time. Pro can turn off after the preview.
-		if (usesPro(plan.options) && !isPro()) throw new Error(NEED_PRO);
+		if (usesPro(plan.options) && !isPro()) throw new Error(proText(NEED_PRO));
 		this.importing = true;
 		try { return await writeImport(this.app.vault, plan, token); } finally { this.importing = false; }
 	}
 	/** Save the date filter, file name rule and daily note section. Pro only. */
 	async saveRules(rules: Pick<DaylioBackupImportSettings, 'useRules' | 'nameRule' | 'filter' | 'dailyMerge' | 'dailyFolder' | 'dailyHeading'>): Promise<boolean> {
-		if (!isPro()) { new Notice(NEED_PRO); return false; }
+		if (!isPro()) { proNotice(NEED_PRO); return false; }
 		validateOptions({ folder: this.settings.folder, nameRule: rules.nameRule, filter: rules.filter, daily: { folder: rules.dailyFolder, heading: rules.dailyHeading } });
 		this.settings = normalizeSettings({ ...this.settings, ...rules, filter: { ...rules.filter } });
 		await this.saveSettings();
