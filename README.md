@@ -63,7 +63,7 @@ For a manual install, copy `main.js`, `manifest.json` and `styles.css` from a re
 5. Select Create notes. The result line shows the counts of notes, skipped entries, photos, daily lines and errors.
 6. Open a note and check its properties and its photo.
 
-To stop a long import, select Cancel import. The plugin stops after the current batch of 10 entries. The notes and photos written before the stop stay in the vault, and the result line tells you the counts.
+To stop a long import, select Cancel import. The plugin stops after the current batch of 10 entries. The notes and photos written before the stop stay in the vault. The result line shows the counts.
 
 A second import into the same folder skips the source IDs that notes in that folder have in their `daylio_id` property. It copies no photo for a skipped entry and changes no existing note. A different file at a target path skips that entry as a conflict.
 
@@ -71,7 +71,7 @@ A second import into the same folder skips the source IDs that notes in that fol
 
 After a minor or major update, this plugin opens one What's new tab in the background. The tab and settings card suggest other NoteMods plugins and Zovo Chat and link to notemods.com for feedback ([privacy](https://notemods.com/privacy/)). The tab sends no data. Turn the tab off in Settings.
 
-The settings tab sets the default import folder, `Daylio`, and has the GitHub Sponsors sign in for Pro. The import window has the folder for one import and the Pro options. A completed import saves its folder for the next import.
+The settings tab sets the default import folder, `Daylio`, and has the Pro sign in. The import window has the folder for one import and the Pro options. A completed import saves its folder for the next import.
 
 ## FAQ
 
@@ -97,6 +97,8 @@ We did not test a real Daylio backup, a backup from a recent Daylio version, a p
 
 The core features are free. Pro features need a GitHub Sponsors sponsorship of theluckystrike: $5 a month or more, or $15 once. A total payment of $15 meets the payment requirement for Pro without further payment. Sign-in and the checks below still apply. Your notes stay readable and editable with or without Pro.
 
+[One payment turns on Pro in every NoteMods plugin](https://notemods.com/pro/).
+
 GitHub handles the payment. Sponsor at https://github.com/sponsors/theluckystrike?frequency=one-time&metadata_source=daylio-backup-import. You need no account for the free features. Pro needs the GitHub account that sponsors.
 
 Until you select "Sign in with GitHub" in the settings, Daylio Backup Import makes no network requests. Sign in uses the GitHub device flow. Daylio Backup Import sends its public client ID and the scope `read:user` to `https://github.com/login/device/code` and shows you a code. While you enter the code at https://github.com/login/device, it asks `https://github.com/login/oauth/access_token` every few seconds to check the sign-in status. The scope permits profile reads only. GitHub needs this access to show the sponsorship tier. It grants no repository scope and no write access.
@@ -107,4 +109,4 @@ After a successful check, Pro can work offline for up to 14 days. Sign out or a 
 
 ## Support
 
-Report a problem in the repository issues with the Obsidian version, the Daylio app version and the error text. Do not attach a private backup. Keep the original backup until you have checked the imported notes. Publisher: theluckystrike, notemods.com.
+Report a problem in the repository issues with the Obsidian version, the Daylio app version and the error text. Do not attach a private backup. Keep the original backup until you have checked the imported notes.
