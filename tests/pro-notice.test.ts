@@ -10,7 +10,7 @@ import manifest from '../manifest.json';
 
 // A free user can select the Pro controls of the import window. The select shows the shared Pro notice with the
 // "Sponsor on GitHub" button. No rule is saved, no Pro option turns on, and each toggle shows off again.
-const PITCH = 'Sponsor on GitHub, then sign in from the plugin settings.';
+const PITCH = 'One payment turns on Pro in every NoteMods plugin. Sponsor on GitHub, then sign in from the plugin settings.';
 const fixture = () => readBackup(new Uint8Array(readFileSync('tests/fixtures/daylio-v15.daylio')));
 
 function fakePro(pro: boolean): SponsorsManager {
